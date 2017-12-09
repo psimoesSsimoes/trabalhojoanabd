@@ -44,6 +44,11 @@ select Produto.nome,SUM(Elemento.pegadaEcologica * composto.percentagem) as 'peg
 
 select nome from (select MAX(pior_para_saude) as pior from (select Produto.nome,SUM(Elemento.saude * composto.percentagem) as pior_para_saude from Produto inner join composto inner join Elemento on  Produto.marca = composto.prodMarca and Produto.codigo=composto.produto and Elemento.codigo=composto.elemento group by Produto.nome) as alias) alias2 inner join (select Produto.nome,SUM(Elemento.saude * composto.percentagem) as pior_para_saude from Produto inner join composto inner join Elemento on  Produto.marca = composto.prodMarca and Produto.codigo=composto.produto and Elemento.codigo=composto.elemento group by Produto.nome)alias3 where alias2.pior=alias3.pior_para_saude;
 
+-- esta usa a clausula having. Acho que é permitido e dá o mesmo resultado
+
+select p.nome,SUM(e.saude * c.percentagem) as pior_para_saude from Produto p inner join composto c inner join Elemento e on  p.marca = c.prodMarca and p.codigo=c.produto and e.codigo=c.elemento group by p.nome having pior_para_saude = (select SUM(Elemento.saude * composto.percentagem) as pior_para_saude from Produto inner join composto inner join Elemento where Produto.marca = composto.prodMarca and Produto.codigo=composto.produto and Elemento.codigo=composto.elemento group by Produto.nome ORDER BY pior_para_saude DESC limit 1) ;
+
+
 --Liste o sexo e a idade de todas as pessoas abrangidas por esta base de dados –
 --consumidores e seus dependentes
 -- é só usar a 2 para as 2 tabelas e unir os resultados
@@ -54,4 +59,12 @@ select nome from (select MAX(pior_para_saude) as pior from (select Produto.nome,
 --ecológica – ter em conta o número de dependentes, dividindo a mesma pelo
 --número de pessoas no agregado (consumidor + número de dependentes).
 
+--este deixo para voces. a resposta está resolvida nas de cima...
+
+---Email dos consumidores que realizaram compras que incluem todos os
+--elementos mencionados na tabela “Elemento”
+-- esta não faço idea como fazer sem select no from. Tem que enviar um email ao prof porque eu também gostava de saber como se faz.
+-- A unica ideia que me veio à cabeca foi contar os pares de email elemento da junção da tabela e comparar com o numero de elementos que está na tabela elementos. contudo nao estou mesmo a conseguir pensar numa maneira de chegar lá sem from + select.
+
+select email,sum(i) from (select distinct Consumidor.email,Elemento.nome,count(distinct (nome)) as i from Elemento inner join composto inner join compra inner join Consumidor on Elemento.nome = composto.elemento and composto.produto=compra.produto and composto.prodMarca=compra.prodMarca and Consumidor.numero = compra.consumidor group by 1,2) alias group by alias.email;
 
