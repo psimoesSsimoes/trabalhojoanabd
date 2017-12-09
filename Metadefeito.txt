@@ -1,0 +1,23 @@
+-- 1
+SELECT P.nome 
+FROM Produto P 
+WHERE P.comercioJusto='A' OR P.comercioJusto='B'
+ORDER BY nome DESC
+
+-- 2
+SELECT FLOOR(DATEDIFF(NOW(), C.nascimento) / 365) AS idade, C.sexo
+FROM Consumidor C
+WHERE C.email='marcolina@hotmail.com'
+
+-- 3
+SELECT C1.email
+FROM Consumidor C1, compra C2, Produto P
+WHERE C2.consumidor=C1.numero AND C2.prodMarca=P.marca 
+		AND C2.Produto=P.codigo AND P.nome='gasolina' 
+
+-- 4
+SELECT C1.email
+FROM Consumidor C1, compra C2, Produto P
+WHERE C2.consumidor=C1.numero AND C2.prodMarca=P.marca 
+		AND C2.Produto=P.codigo AND P.nome='gasolina' AND C2.quantidade = (SELECT MAX(C2.quantidade )
+                                                                           FROM compra C2)

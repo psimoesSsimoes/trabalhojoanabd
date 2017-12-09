@@ -1,12 +1,3 @@
-
-Drop table  Dependente ;
-Drop table  compra ;
-Drop table  Consumidor ;
-Drop table  composto ;
-Drop table  Produto ;
-Drop table  Marca ;
-Drop table  Elemento ;
-
 Create table  Consumidor  (
 	numero	int(9),
 	email	varchar(30)	not null,
@@ -17,7 +8,7 @@ Create table  Consumidor  (
 	constraint pk_Consumidor	 primary key (numero)
 );
 
-Create table  Dependente  (
+Create table Dependente (
 	consumidor	int(9),
 	numero	int(2),
 	sexo	char(1)	not null,
